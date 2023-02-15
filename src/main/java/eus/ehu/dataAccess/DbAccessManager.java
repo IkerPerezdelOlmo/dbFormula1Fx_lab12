@@ -48,15 +48,16 @@ public class DbAccessManager {
         return instance;
     }
 
-    public void storePilot(String name, String nationality, int points) {
+    public void storePilot(int id, String name, String nationality, int points) {
 
         this.open();
-        String sql = "INSERT INTO pilots (name, nationality, points) VALUES(?,?,?)";
+        String sql = "INSERT INTO pilots (id, name, nationality, points) VALUES(?,?,?,?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, nationality);
-            pstmt.setInt(3, points);
+            pstmt.setInt(1, id);
+            pstmt.setString(2, name);
+            pstmt.setString(3, nationality);
+            pstmt.setInt(4, points);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -72,10 +73,10 @@ public class DbAccessManager {
         this.open();
 
         try {
-            String query = "SELECT name, nationality, points FROM pilots";
+            String query = "SELECT id, name, nationality, points FROM pilots";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while (rs.next()) {
-                pilots.add(new Pilot(rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
+                pilots.add(new Pilot(rs.getInt("id"), rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,7 +120,7 @@ public class DbAccessManager {
 
             ResultSet rs  = pstmt.executeQuery();
             while (rs.next()) {
-                result.add(new Pilot(rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
+                result.add(new Pilot(rs.getInt("id"), rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
             }
 
         } catch (SQLException e) {
@@ -145,7 +146,7 @@ public class DbAccessManager {
 
             ResultSet rs  = pstmt.executeQuery();
             while (rs.next()) {
-                result.add(new Pilot(rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
+                result.add(new Pilot(rs.getInt("id"), rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
             }
 
         } catch (SQLException e) {
@@ -200,7 +201,7 @@ public class DbAccessManager {
 
             ResultSet rs  = pstmt.executeQuery();
             while (rs.next()) {
-                result.add(new Pilot(rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
+                result.add(new Pilot(rs.getInt("id"), rs.getString("name"), rs.getString("nationality"), rs.getInt("points")));
             }
 
         } catch (SQLException e) {
@@ -211,6 +212,20 @@ public class DbAccessManager {
         return result;
     }
 
+    public int deletePilotById(int id){
+        this.open();
+        int amount = 0;
+        String sql = "DELETE FROM pilots WHERE id = ?";
+        try (PreparedStatement pstmt  = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            amount = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        this.close();
+
+        return amount;
+    }
 
 
 }

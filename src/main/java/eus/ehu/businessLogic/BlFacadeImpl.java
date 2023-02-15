@@ -9,8 +9,8 @@ public class BlFacadeImpl implements BlFacade{
 
     private DbAccessManager dbManager=DbAccessManager.getInstance();
     @Override
-    public void storePilot(String name, String nationality, int points) {
-        dbManager.storePilot(name,nationality, points);
+    public void storePilot(int id, String name, String nationality, int points) {
+        dbManager.storePilot(id, name,nationality, points);
     }
 
     @Override
@@ -36,6 +36,11 @@ public class BlFacadeImpl implements BlFacade{
     @Override
     public List<String> getAllNationalities(){
         return dbManager.getAllNationalities();
+    }
+
+    @Override
+    public void deletePilotById(int id){
+        dbManager.deletePilotById(id);
     }
 
 }
